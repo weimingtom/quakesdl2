@@ -188,7 +188,7 @@ void CL_Record_f (void)
 	//
 	// open the demo file
 	//
-	Com_sprintf (name, sizeof(name), "%s/demos/%s.dm2", FS_Gamedir(), Cmd_Argv(1));
+	Com_sprintf (name, sizeof(name), "%s/demos/%s.dm2", FS_UserDir(), Cmd_Argv(1));
 
 	Com_Printf ("recording to %s.\n", name);
 	FS_CreatePath (name);
@@ -1561,7 +1561,7 @@ void CL_WriteConfiguration (void)
 	if (cls.state == ca_uninitialized)
 		return;
 
-	Com_sprintf (path, sizeof(path),"%s/config.cfg",FS_Gamedir());
+	Com_sprintf (path, sizeof(path),"%s/config.cfg", FS_UserDir());
 	f = fopen (path, "w");
 	if (!f)
 	{

@@ -154,7 +154,7 @@ void Con_Dump_f (void)
 		return;
 	}
 
-	Com_sprintf (name, sizeof(name), "%s/%s.txt", FS_Gamedir(), Cmd_Argv(1));
+	Com_sprintf (name, sizeof(name), "%s/%s.txt", FS_UserDir(), Cmd_Argv(1));
 
 	Com_Printf ("Dumped console text to %s.\n", name);
 	FS_CreatePath (name);

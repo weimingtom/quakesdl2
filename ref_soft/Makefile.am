@@ -1,4 +1,4 @@
-lib_LTLIBRARIES = libref_soft.la
+ref_LTLIBRARIES = libref_soft.la
 
 libref_soft_la_SOURCES = r_aclip.c r_alias.c r_bsp.c r_draw.c r_edge.c \
                          r_image.c r_light.c r_main.c r_misc.c r_model.c \

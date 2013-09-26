@@ -48,7 +48,9 @@ qboolean	reflib_active = 0;
 
 #define VID_NUM_MODES ( sizeof( vid_modes ) / sizeof( vid_modes[0] ) )
 
+#ifndef REFRESH_ENGINE_DIRECTORY
 const char so_file[] = "/etc/quake2.conf";
+#endif
 
 /** KEYBOARD **************************************************************/
 
@@ -226,6 +228,12 @@ qboolean VID_LoadRefresh( char *name )
 	//regain root
 	seteuid(saved_euid);
 
+#ifdef REFRESH_ENGINE_DIRECTORY
+	fn[0] = '\0';
+	strcat(fn, REFRESH_ENGINE_DIRECTORY);
+	strcat(fn, "/lib");
+	strcat(fn, name);
+#else	
 	if ((fp = fopen(so_file, "r")) == NULL) {
 		Com_Printf( "LoadLibrary(\"%s\") failed: can't open %s (required for location of ref libraries)\n", name, so_file);
 		return false;
@@ -237,6 +245,7 @@ qboolean VID_LoadRefresh( char *name )
 
 	strcat(fn, "/");
 	strcat(fn, name);
+#endif
 
 	// permission checking
 	if (strstr(fn, "softx") == NULL) { // softx doesn't require root
@@ -277,7 +286,7 @@ qboolean VID_LoadRefresh( char *name )
 	ri.Sys_Error = VID_Error;
 	ri.FS_LoadFile = FS_LoadFile;
 	ri.FS_FreeFile = FS_FreeFile;
-	ri.FS_Gamedir = FS_Gamedir;
+	ri.FS_UserDir = FS_UserDir;
 	ri.Cvar_Get = Cvar_Get;
 	ri.Cvar_Set = Cvar_Set;
 	ri.Cvar_SetValue = Cvar_SetValue;

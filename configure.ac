@@ -16,29 +16,44 @@ AC_PROG_CC
 # Checks for libraries.
 
 # Checks for header files.
-AC_PATH_X
-AC_CHECK_HEADERS([fcntl.h float.h limits.h mntent.h netdb.h netinet/in.h stdlib.h string.h strings.h sys/file.h sys/ioctl.h sys/param.h sys/socket.h sys/time.h termios.h unistd.h])
+#AC_PATH_X
+#AC_CHECK_HEADERS([fcntl.h float.h limits.h mntent.h netdb.h netinet/in.h stdlib.h string.h strings.h sys/file.h sys/ioctl.h sys/param.h sys/socket.h sys/time.h termios.h unistd.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
-AC_CHECK_HEADER_STDBOOL
-AC_C_INLINE
-AC_TYPE_UID_T
+#AC_CHECK_HEADER_STDBOOL
+#AC_C_INLINE
+#AC_TYPE_UID_T
 
 # Checks for library functions.
-AC_FUNC_ERROR_AT_LINE
-AC_FUNC_GETMNTENT
-AC_FUNC_MALLOC
-AC_FUNC_MMAP
-AC_FUNC_REALLOC
+#AC_FUNC_ERROR_AT_LINE
+#AC_FUNC_GETMNTENT
+#AC_FUNC_MALLOC
+#AC_FUNC_MMAP
+#AC_FUNC_REALLOC
 #AC_CHECK_FUNCS([bzero floor getcwd gethostbyname getmntent getpagesize gettimeofday memmove memset mkdir munmap pow putenv select socket sqrt strcasecmp strchr strdup strerror strrchr strstr])
 
+## Custom stuff follows here
+# For some reason, using the software renderer and not having 
+# position-independent code crashes somewhere in the mixer assembly code. Go figure...
+CFLAGS="$CFLAGS -Dstricmp=strcasecmp -fPIC"
+
+# Set directories
+libdir="$libdir/$PACKAGE-$PACKAGE_VERSION/"
+datadir="$datadir/$PACKAGE-$PACKAGE_VERSION/"
+datarootdir="$datarootdir/$PACKAGE-$PACKAGE_VERSION/"
+
+# Refresh engine directory
+AC_SUBST([refdir], [$libdir/ref])
+AC_SUBST([refdirdef], [-DREFRESH_ENGINE_DIRECTORY=\\\"$refdir\\\"])
+# Games directory
+AC_SUBST([gamesdir], [$datadir/game])
+AC_SUBST([gamesdirdef], [-DGAMES_DIRECTORY=\\\"$gamesdir\\\"])
+
+# Defaults
+AC_DEFINE([DEFAULT_REFRESH_ENGINE], [glx], [Default refresh engine to use])
+AC_DEFINE([DEFAULT_GAME], ["baseq2"], [Default game to use])
+
 AM_CONDITIONAL([PLATFORM_LINUX], [true])
-AM_CONDITIONAL([PLATFORM_LINUX_ENABLEGL], [true])
-
-CFLAGS+=" -Dstricmp=strcasecmp"
-
-# For some reason, using the software renderer and not having position-independent code crashes somewhere in the mixer assembly code. Go figure...
-CFLAGS+=" -fPIC"
 
 AC_CONFIG_FILES([Makefile platform/Makefile qcommon/Makefile ref_soft/Makefile ref_gl/Makefile server/Makefile game/Makefile client/Makefile ])
 AC_OUTPUT

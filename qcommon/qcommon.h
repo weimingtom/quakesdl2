@@ -20,12 +20,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // qcommon.h -- definitions common between client and server, but not game.dll
 
+#include "config.h"
 #include "../game/q_shared.h"
-
-
-#define	VERSION		3.21
-
-#define	BASEDIRNAME	"baseq2"
 
 #ifdef WIN32
 
@@ -692,27 +688,33 @@ FILESYSTEM
 ==============================================================
 */
 
-void	FS_InitFilesystem (void);
-void	FS_SetGamedir (char *dir);
-char	*FS_Gamedir (void);
-char	*FS_NextPath (char *prevpath);
-void	FS_ExecAutoexec (void);
+// Basic file handling
+/* Returns filesize and an open FILE */
+int FS_OpenFile (char *filename, FILE **file);
+void FS_CloseFile (FILE *f);
+/* Properly handles partial reads */
+void FS_Read(void *buffer, int len, FILE *f);
+/* Just returns length if buffer is null */
+int FS_LoadFile (char *path, void **buffer);
+/* Frees a returned file buffer */
+void FS_FreeFile (void *buffer);
 
-int		FS_FOpenFile (char *filename, FILE **file);
-void	FS_FCloseFile (FILE *f);
-// note: this can't be called from another DLL, due to MS libc issues
 
-int		FS_LoadFile (char *path, void **buffer);
-// a null buffer will just return the file length without loading
-// a -1 length is not present
+// File utilities
+int FS_FileLength (FILE *f);
+/* Creates any directories needed to store the given filename */
+void FS_CreatePath(char *path);
+char **FS_ListFiles( char *findname, int *numfiles, unsigned musthave, unsigned canthave);
 
-void	FS_Read (void *buffer, int len, FILE *f);
-// properly handles partial reads
+// Misc
+char *FS_GameDir();
+char *FS_UserDir();
+void FS_ExecAutoexec();
 
-void	FS_FreeFile (void *buffer);
-
-void	FS_CreatePath (char *path);
-
+// Init
+/* Sets the game directory to a different directory. */
+void FS_SetGame(char *dir);
+void FS_InitFilesystem();
 
 /*
 ==============================================================

@@ -1,6 +1,7 @@
-lib_LTLIBRARIES = libgame.la
+gamedir = @gamesdir@/baseq2
 
-# Common sources
+game_LTLIBRARIES = libgame.la
+
 libgame_la_SOURCES = g_ai.c g_chase.c g_cmds.c g_combat.c g_func.c g_items.c \
                      g_main.c g_misc.c g_monster.c g_phys.c g_save.c g_spawn.c \
                      g_svcmds.c g_target.c g_trigger.c g_turret.c g_utils.c \

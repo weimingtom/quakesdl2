@@ -626,7 +626,7 @@ void R_ScreenShot_f (void)
 	byte		palette[768];
 
 	// create the scrnshots directory if it doesn't exist
-	Com_sprintf (checkname, sizeof(checkname), "%s/scrnshot", ri.FS_Gamedir());
+	Com_sprintf (checkname, sizeof(checkname), "%s/scrnshot", ri.FS_UserDir());
 	Sys_Mkdir (checkname);
 
 // 
@@ -638,7 +638,7 @@ void R_ScreenShot_f (void)
 	{ 
 		pcxname[5] = i/10 + '0'; 
 		pcxname[6] = i%10 + '0'; 
-		Com_sprintf (checkname, sizeof(checkname), "%s/scrnshot/%s", ri.FS_Gamedir(), pcxname);
+		Com_sprintf (checkname, sizeof(checkname), "%s/scrnshot/%s", ri.FS_UserDir(), pcxname);
 		f = fopen (checkname, "r");
 		if (!f)
 			break;	// file doesn't exist

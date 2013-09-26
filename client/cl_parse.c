@@ -50,12 +50,8 @@ char *svc_strings[256] =
 
 //=============================================================================
 
-void CL_DownloadFileName(char *dest, int destlen, char *fn)
-{
-	if (strncmp(fn, "players", 7) == 0)
-		Com_sprintf (dest, destlen, "%s/%s", BASEDIRNAME, fn);
-	else
-		Com_sprintf (dest, destlen, "%s/%s", FS_Gamedir(), fn);
+void CL_DownloadFileName(char *dest, int destlen, char *fn) {
+	Com_sprintf (dest, destlen, "%s/%s", FS_UserDir(), fn);
 }
 
 /*
@@ -297,7 +293,6 @@ CL_ParseServerData
 */
 void CL_ParseServerData (void)
 {
-	extern cvar_t	*fs_gamedirvar;
 	char	*str;
 	int		i;
 	
@@ -327,8 +322,7 @@ void CL_ParseServerData (void)
 	strncpy (cl.gamedir, str, sizeof(cl.gamedir)-1);
 
 	// set gamedir
-	if ((*str && (!fs_gamedirvar->string || !*fs_gamedirvar->string || strcmp(fs_gamedirvar->string, str))) || (!*str && (fs_gamedirvar->string || *fs_gamedirvar->string)))
-		Cvar_Set("game", str);
+	Cvar_Set("game", str);
 
 	// parse player entity number
 	cl.playernum = MSG_ReadShort (&net_message);
