@@ -59,4 +59,4 @@ esac
 export CFLAGS
 mkdir -p m4
 autoreconf -i
-./configure $CONFIGUREFLAGS 
+./configure $CONFIGUREFLAGS $@
