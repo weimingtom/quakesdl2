@@ -19,6 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // snd_mix.c -- portable code to mix sounds for snd_dma.c
 
+#include "config.h"
 #include "client.h"
 #include "snd_loc.h"
 
@@ -30,9 +31,7 @@ short	*snd_out;
 
 void S_WriteLinearBlastStereo16 (void);
 
-#if !(defined __linux__ && defined __i386__)
-#if	!id386
-
+#ifndef SNDMIX_ASM
 void S_WriteLinearBlastStereo16 (void)
 {
 	int		i;
@@ -58,6 +57,7 @@ void S_WriteLinearBlastStereo16 (void)
 	}
 }
 #else
+#ifdef SNDMIX_BUILTIN_ASM
 __declspec( naked ) void S_WriteLinearBlastStereo16 (void)
 {
 	__asm {
@@ -101,7 +101,6 @@ LClampDone2:
  ret
 	}
 }
-
 #endif
 #endif
 
@@ -361,10 +360,7 @@ void S_InitScaletable (void)
 	}
 }
 
-
-#if !(defined __linux__ && defined __i386__)
-#if	!id386
-
+#ifndef SNDMIX_ASM
 void S_PaintChannelFrom8 (channel_t *ch, sfxcache_t *sc, int count, int offset)
 {
 	int 	data;
@@ -397,6 +393,7 @@ void S_PaintChannelFrom8 (channel_t *ch, sfxcache_t *sc, int count, int offset)
 }
 
 #else
+#ifdef SNDMIX_BUILTIN_ASM
 
 __declspec( naked ) void S_PaintChannelFrom8 (channel_t *ch, sfxcache_t *sc, int count, int offset)
 {
@@ -467,7 +464,6 @@ LDone:
  ret
 	}
 }
-
 #endif
 #endif
 

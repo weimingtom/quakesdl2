@@ -95,7 +95,7 @@ void Hunk_Free (void *base)
 Sys_Milliseconds
 ================
 */
-int curtime;
+int sys_current_time;
 int Sys_Milliseconds (void)
 {
 	struct timeval tp;
@@ -110,9 +110,9 @@ int Sys_Milliseconds (void)
 		return tp.tv_usec/1000;
 	}
 
-	curtime = (tp.tv_sec - secbase)*1000 + tp.tv_usec/1000;
+	sys_current_time = (tp.tv_sec - secbase)*1000 + tp.tv_usec/1000;
 	
-	return curtime;
+	return sys_current_time;
 }
 
 void Sys_Mkdir (char *path)

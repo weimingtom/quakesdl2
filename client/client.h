@@ -19,6 +19,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // client.h -- primary header for client
 
+#ifndef CLIENT_H
+#define CLIENT_H
+
 //define	PARANOID			// speed sapping error checking
 
 #include <math.h>
@@ -582,3 +585,5 @@ void x86_TimerStop( void );
 void x86_TimerInit( unsigned long smallest, unsigned longest );
 unsigned long *x86_TimerGetHistogram( void );
 #endif
+
+#endif /* CLIENT_H */

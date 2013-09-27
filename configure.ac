@@ -12,6 +12,8 @@ LT_INIT
 # Checks for programs.
 AM_PROG_AS
 AC_PROG_CC
+AC_PROG_SED
+PKG_PROG_PKG_CONFIG
 
 # Checks for libraries.
 
@@ -33,9 +35,38 @@ AC_PROG_CC
 #AC_CHECK_FUNCS([bzero floor getcwd gethostbyname getmntent getpagesize gettimeofday memmove memset mkdir munmap pow putenv select socket sqrt strcasecmp strchr strdup strerror strrchr strstr])
 
 ## Custom stuff follows here
-# For some reason, using the software renderer and not having 
-# position-independent code crashes somewhere in the mixer assembly code. Go figure...
-CFLAGS="$CFLAGS -Dstricmp=strcasecmp -fPIC"
+CFLAGS="$CFLAGS -Dstricmp=strcasecmp"
+
+platforms="linux sdl2"
+platform="sdl2"
+
+_found="no"
+for i in $platforms; do
+	if test "$i" == "$platform"; then
+		_found="yes"
+	fi
+done
+if test "$_found" == "no"; then
+	echo ""
+	echo "Specified platform $platform is invalid."
+	echo "Use one of these: $platforms"
+	exit 1
+fi
+
+AM_CONDITIONAL([PLATFORM_LINUX], [test $platform == "linux"])
+AM_CONDITIONAL([PLATFORM_SDL2], [test $platform == "sdl2"])
+
+AM_CONDITIONAL([REF_GL_LINUX], [true])
+AM_CONDITIONAL([REF_SOFT_LINUX], [true])
+
+if test "$platform" == "linux"; then
+	# For some reason, using the software renderer and not having 
+	# position-independent code crashes somewhere in the mixer assembly code. Go figure...
+	CFLAGS="$CFLAGS -fPIC"
+	AC_DEFINE([SNDMIX_ASM], [1], [Use assembler sound mixing routines])
+elif test "$platform" == "sdl2"; then
+	PKG_CHECK_MODULES([SDL2], [sdl2 >= 2.0.0])
+fi
 
 # Set directories
 libdir="$libdir/$PACKAGE-$PACKAGE_VERSION/"
@@ -50,10 +81,8 @@ AC_SUBST([gamesdir], [$datadir/game])
 AC_SUBST([gamesdirdef], [-DGAMES_DIRECTORY=\\\"$gamesdir\\\"])
 
 # Defaults
-AC_DEFINE([DEFAULT_REFRESH_ENGINE], [glx], [Default refresh engine to use])
+AC_DEFINE([DEFAULT_REFRESH_ENGINE], ["glx"], [Default refresh engine to use])
 AC_DEFINE([DEFAULT_GAME], ["baseq2"], [Default game to use])
-
-AM_CONDITIONAL([PLATFORM_LINUX], [true])
 
 AC_CONFIG_FILES([Makefile platform/Makefile qcommon/Makefile ref_soft/Makefile ref_gl/Makefile server/Makefile game/Makefile client/Makefile ])
 AC_OUTPUT

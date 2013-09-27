@@ -45,7 +45,7 @@ case $1 in
 		exit 0
 		;;
 	--devbuild)
-		CFLAGS="-O0 -Wall" # -Werror
+		CFLAGS="-O0 -g -Wall" # -Werror
 		CONFIGUREFLAGS="--prefix=$PWD/out"
 		shift
 		;;

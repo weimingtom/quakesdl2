@@ -1698,7 +1698,7 @@ void CL_Frame (int msec)
 	// decide the simulation time
 	cls.frametime = extratime/1000.0;
 	cl.time += extratime;
-	cls.realtime = curtime;
+	cls.realtime = sys_current_time;
 
 	extratime = 0;
 #if 0

@@ -263,7 +263,7 @@ SYSTEM SPECIFIC
 ==============================================================
 */
 
-extern	int	curtime;		// time returned by last Sys_Milliseconds
+extern	int	sys_current_time; // time returned by last Sys_Milliseconds
 
 int		Sys_Milliseconds (void);
 void	Sys_Mkdir (char *path);

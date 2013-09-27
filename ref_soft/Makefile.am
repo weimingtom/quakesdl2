@@ -8,7 +8,7 @@ libref_soft_la_SOURCES = r_aclip.c r_alias.c r_bsp.c r_draw.c r_edge.c \
                          r_polysa.asm r_scana.asm r_spr8.asm r_surf8.asm \
                          r_varsa.asm
 
-if PLATFORM_LINUX
+if REF_SOFT_LINUX
 libref_soft_la_SOURCES += @top_srcdir@/platform/linux/r_varsa.s \
                           @top_srcdir@/platform/linux/r_aclipa.s \
                           @top_srcdir@/platform/linux/r_surf8.s \
