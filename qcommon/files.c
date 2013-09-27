@@ -18,16 +18,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
+#include <ctype.h>
 #include "qcommon.h"
 
-/*
-=============================================================================
-
-QUAKE FILESYSTEM
-
-=============================================================================
-*/
-
+// QUAKE FILESYSTEM
 
 /* This is the completely overhauled filesystem handler. It throws away many of
  * the previous features, including pak support and the ability to overlay
@@ -59,6 +53,17 @@ QUAKE FILESYSTEM
 static char *fs_gameDir = NULL; // Absolute paths
 static char *fs_userDir = NULL;
 
+static void char *strtolower(const char *str) {
+	char *ret = malloc(strlen(str));
+	
+	int i;
+	for (i = 0; i < strlen(str); i++) {
+		ret[i] = tolower(str[i]);
+	}
+	
+	return ret;
+}
+
 static FILE *_FS_OpenWithBase(char *base, char *filename) {
 	FILE *ret;
 	
@@ -69,11 +74,15 @@ static FILE *_FS_OpenWithBase(char *base, char *filename) {
 	
 	return ret;
 }
-int FS_OpenFile (char *filename, FILE **file) {	
-	*file = _FS_OpenWithBase(fs_userDir, filename);
+
+int FS_OpenFile (char *filename, FILE **file) {
+	char *lower = strtolower(filename);
+	
+	*file = _FS_OpenWithBase(fs_userDir, lower);
 	if (*file == NULL)
-		*file = _FS_OpenWithBase(fs_gameDir, filename);
+		*file = _FS_OpenWithBase(fs_gameDir, lower);
 		
+	strfree(lower);
 	if (*file != NULL)
 		return FS_FileLength(*file);
 	return 0;
