@@ -53,7 +53,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 static char *fs_gameDir = NULL; // Absolute paths
 static char *fs_userDir = NULL;
 
-static void char *strtolower(const char *str) {
+static char *strtolower(const char *str) {
 	char *ret = malloc(strlen(str));
 	
 	int i;
@@ -82,7 +82,7 @@ int FS_OpenFile (char *filename, FILE **file) {
 	if (*file == NULL)
 		*file = _FS_OpenWithBase(fs_gameDir, lower);
 		
-	strfree(lower);
+	free(lower);
 	if (*file != NULL)
 		return FS_FileLength(*file);
 	return 0;
