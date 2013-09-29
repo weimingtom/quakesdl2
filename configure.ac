@@ -114,7 +114,7 @@ AM_CONDITIONAL([REF_GL_LINUX], [listContains "linux" $ref_gl_platforms])
 AM_CONDITIONAL([REF_SOFT_SDL2], [listContains "sdl2" $ref_soft_platforms])
 AM_CONDITIONAL([REF_GL_SDL2], [listContains "sdl2" $ref_gl_platforms])
 
-if listContains "linux" "$all_platforms"; then
+if test "$platform" == "linux"; then
 	# For some reason, using the software renderer and not having 
 	# position-independent code crashes somewhere in the mixer assembly code. Go figure...
 	CFLAGS="$CFLAGS -fPIC"

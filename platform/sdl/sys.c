@@ -37,12 +37,11 @@ void Sys_Error(char *format, ...) {
 }
 
 void Sys_ConsoleOutput(char *string) {
-	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, string);
+	//SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, string);
+	printf("%s", string);
 }
 
 char *Sys_ConsoleInput() {
-	static char ret = 0;
-	//return &ret;
 	return NULL;
 }
 
@@ -81,15 +80,14 @@ char *Sys_GetClipboardData() {
 	return NULL;
 }
 
-
 /* Game handling */
 void *Sys_GetGameAPI(void *parms) {
 	if (_sys_gameso != NULL) {
-		SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "Sys_GetGameAPI: There's already a game loaded!\n");
+		Com_Printf("Sys_GetGameAPI: There's already a game loaded!\n");
 		return NULL;
 	}
 	
-	SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "Loading game...\n");
+	Com_Printf("Loading game...\n");
 	
 	char *pathBuf = malloc(strlen(FS_GameDir()) + 1 + strlen("libgame.so") + 1);
 	strcpy(pathBuf, FS_GameDir());
@@ -142,13 +140,13 @@ int main (int argc, char **argv)
 	Qcommon_Init(argc, argv);
 
     oldtime = Sys_Milliseconds ();
-    while (1) {
+    for (;;) {
 	// find time spent rendering last frame
 		do {
 			newtime = Sys_Milliseconds ();
 			time = newtime - oldtime;
 		} while (time < 1);
-        Qcommon_Frame (time);
+        Qcommon_Frame(time);
 		oldtime = newtime;
     }
 }

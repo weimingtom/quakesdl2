@@ -54,12 +54,13 @@ static char *fs_gameDir = NULL; // Absolute paths
 static char *fs_userDir = NULL;
 
 static char *strtolower(const char *str) {
-	char *ret = malloc(strlen(str));
+	char *ret = malloc(strlen(str)+1);
 	
 	int i;
 	for (i = 0; i < strlen(str); i++) {
 		ret[i] = tolower(str[i]);
 	}
+	ret[i] = 0;
 	
 	return ret;
 }

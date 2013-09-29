@@ -21,6 +21,4 @@ libplatform_la_SOURCES = sdl/sys.c sdl/sys_dir.c sdl/sys_hunk.c \
                          sdl/glob_linux.c
 libplatform_la_CFLAGS = @SDL2_CFLAGS@ -I@top_srcdir@/platform/sdl @refdirdef@
 libplatform_la_LIBADD = @SDL2_LIBS@
-
-libplatform_la_CCASFLAGS = -DELF -x assembler-with-cpp
 endif
