@@ -19,6 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // r_edge.c
 
+#include "config.h"
 #include "r_local.h"
 
 #ifndef id386
@@ -140,7 +141,7 @@ void R_BeginEdgeFrame (void)
 }
 
 
-#if	!id386
+#ifndef REF_SOFT_ASM
 
 /*
 ==============
@@ -183,11 +184,6 @@ addedge:
 	} while ((edgestoadd = next_edge) != NULL);
 }
 
-#endif	// !id386
-	
-
-#if	!id386
-
 /*
 ==============
 R_RemoveEdges
@@ -202,11 +198,6 @@ void R_RemoveEdges (edge_t *pedge)
 		pedge->prev->next = pedge->next;
 	} while ((pedge = pedge->nextremove) != NULL);
 }
-
-#endif	// !id386
-
-
-#if	!id386
 
 /*
 ==============
@@ -273,7 +264,7 @@ pushback:
 	}
 }
 
-#endif	// !id386
+#endif	/* REF_SOFT_ASM */
 
 
 /*
@@ -429,7 +420,7 @@ void R_TrailingEdge (surf_t *surf, edge_t *edge)
 }
 
 
-#if	!id386
+#ifndef REF_SOFT_ASM
 
 /*
 ==============
@@ -590,7 +581,7 @@ void R_GenerateSpans (void)
 	R_CleanupSpan ();
 }
 
-#endif	// !id386
+#endif /* REF_SOFT_ASM */
 
 
 /*

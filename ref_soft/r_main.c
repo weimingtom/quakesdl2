@@ -18,7 +18,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 // r_main.c
-
+#include "config.h"
 #include "r_local.h"
 
 viddef_t	vid;
@@ -143,7 +143,7 @@ cvar_t	*sw_lockpvs;
 #define	STRINGER(x) "x"
 
 
-#if	!id386
+#ifndef REF_SOFT_ASM
 
 // r_vars.c
 
@@ -184,7 +184,7 @@ unsigned int	d_zrowbytes;
 unsigned int	d_zwidth;
 
 
-#endif	// !id386
+#endif	/* REF_SOFT_ASM */
 
 byte	r_notexture_buffer[1024];
 
@@ -317,11 +317,11 @@ qboolean R_Init( void *hInstance, void *wndProc )
 	r_refdef.yOrigin = YCENTERING;
 
 // TODO: collect 386-specific code in one place
-#if	id386
+#ifdef REF_SOFT_ASM
 	Sys_MakeCodeWriteable ((long)R_EdgeCodeStart,
 					     (long)R_EdgeCodeEnd - (long)R_EdgeCodeStart);
 	Sys_SetFPCW ();		// get bit masks for FPCW	(FIXME: is this id386?)
-#endif	// id386
+#endif
 
 	r_aliasuvscale = 1.0;
 

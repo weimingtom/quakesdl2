@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 /*
 ** use a real variable to control lerping
 */
+#include "config.h"
 #include "r_local.h"
 
 #define LIGHT_MIN	5		// lowest light value we'll allow, to avoid the
@@ -429,7 +430,7 @@ void R_AliasSetUpTransform (void)
 R_AliasTransformFinalVerts
 ================
 */
-#if id386 && !defined __linux__
+#if defined(REF_SOFT_ASM) && !defined REF_SOFT_ASM_INLINE
 void R_AliasTransformFinalVerts( int numpoints, finalvert_t *fv, dtrivertx_t *oldv, dtrivertx_t *newv )
 {
 	float  lightcos;

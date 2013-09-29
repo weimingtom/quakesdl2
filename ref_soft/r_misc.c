@@ -18,7 +18,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 // r_misc.c
-
+#include "config.h"
 #include "r_local.h"
 
 #define NUM_MIPS	4
@@ -49,7 +49,7 @@ D_Patch
 */
 void D_Patch (void)
 {
-#if id386
+#ifdef REF_SOFT_ASM
 	extern void D_Aff8Patch( void );
 	static qboolean protectset8 = false;
 	extern void D_PolysetAff8Start( void );
@@ -66,7 +66,7 @@ void D_Patch (void)
 
 	R_Surf8Patch ();
 	D_Aff8Patch();
-#endif
+#endif /* REF_SOFT_ASM */
 }
 /*
 ================
@@ -206,8 +206,8 @@ void R_TransformFrustum (void)
 }
 
 
-#if !(defined __linux__ && defined __i386__)
-#if !id386
+#if !(defined REF_SOFT_ASM_INLINE && defined REF_SOFT_ASM)
+#ifndef REF_SOFT_ASM
 
 /*
 ================
@@ -515,7 +515,7 @@ void R_SetupFrame (void)
 }
 
 
-#if	!id386
+#ifndef REF_SOFT_ASM
 
 /*
 ================
@@ -527,7 +527,7 @@ void R_SurfacePatch (void)
 	// we only patch code on Intel
 }
 
-#endif	// !id386
+#endif /* REF_SOFT_ASM */
 
 
 /* 

@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 // Portable C scan-level rasterization code, all pixel depths.
 
+#include "config.h"
 #include "r_local.h"
 
 unsigned char	*r_turb_pbase, *r_turb_pdest;
@@ -92,7 +93,7 @@ void D_WarpScreen (void)
 }
 
 
-#if	!id386
+#ifndef REF_SOFT_ASM
 
 /*
 =============
@@ -113,7 +114,7 @@ void D_DrawTurbulent8Span (void)
 	} while (--r_turb_spancount > 0);
 }
 
-#endif	// !id386
+#endif /* REF_SOFT_ASM */
 
 
 /*
@@ -387,7 +388,7 @@ void NonTurbulent8 (espan_t *pspan)
 //====================
 
 
-#if	!id386
+#ifndef REF_SOFT_ASM
 
 /*
 =============
@@ -524,11 +525,6 @@ void D_DrawSpans16 (espan_t *pspan)
 	} while ((pspan = pspan->pnext) != NULL);
 }
 
-#endif
-
-
-#if	!id386
-
 /*
 =============
 D_DrawZSpans
@@ -587,5 +583,5 @@ void D_DrawZSpans (espan_t *pspan)
 	} while ((pspan = pspan->pnext) != NULL);
 }
 
-#endif
+#endif /* REF_SOFT_ASM */
 

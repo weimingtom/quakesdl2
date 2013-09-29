@@ -55,8 +55,11 @@ PLATFORMS="linux sdl2"
 platform=""
 ref_soft_platform=""
 ref_gl_platforms=""
+ref_soft_asm="no"
 
 all_platforms=""
+
+
 
 AC_ARG_WITH([platform], [AS_HELP_STRING([--with-platform=], [Choose main binary platform. One of $PLATFORMS])], [
 if test -z "$withval"; then
@@ -64,29 +67,36 @@ if test -z "$withval"; then
 fi
 platform="$withval"
 ])
-AC_ARG_ENABLE([ref-soft-platform], AS_HELP_STRING([--enable-ref-soft-platform=], [Choose soft refresh platforms]), 
+AC_ARG_ENABLE([ref-soft-platform], AS_HELP_STRING([--enable-ref-soft-platform=], 
+[Choose soft refresh platforms. You can specify multiple platform by seperating them using a comma]), 
 [
 if test -z "$enableval"; then
 	AC_MSG_ERROR([you have to specify a value for platform])
 fi
-ref_soft_platforms="$ref_soft_platforms $enableval"
-])
-AC_ARG_ENABLE([ref-gl-platform], AS_HELP_STRING([--enable-ref-gl-platform=], [Choose gl refresh platforms]), 
-[
-if test -z "$enableval"; then
-	AC_MSG_ERROR([you have to specify a value for platform])
-fi
-ref_gl_platforms="$ref_gl_platforms $enableval"
+ref_soft_platforms="$(echo $enableval | sed 's/,/ /g')"
 ])
 
+AC_ARG_ENABLE([ref-gl-platform], AS_HELP_STRING([--enable-ref-gl-platform=], 
+[Choose gl refresh platforms. You can specify multiple platform by seperating them using a comma]), 
+[
+if test -z "$enableval"; then
+	AC_MSG_ERROR([you have to specify a value for platform])
+fi
+ref_gl_platforms="$(echo $enableval | sed 's/,/ /g')"
+])
+
+AC_ARG_ENABLE([ref-soft-asm],
+AS_HELP_STRING([--enable-ref-soft-asm], [Enable soft refresh assembler routines. x86 only]),
+[ref_soft_asm="yes"])
+
 if test -z "$platform"; then
-	platform="linux"
+	platform="sdl2"
 fi
 if test -z "$ref_soft_platforms"; then
 	ref_soft_platforms="linux"
 fi
 if test -z "$ref_gl_platforms"; then
-	ref_gl_platforms="linux"
+	ref_gl_platforms="linux sdl2"
 fi
 
 # Check given platforms
@@ -114,6 +124,14 @@ AM_CONDITIONAL([REF_GL_LINUX], [listContains "linux" $ref_gl_platforms])
 AM_CONDITIONAL([REF_SOFT_SDL2], [listContains "sdl2" $ref_soft_platforms])
 AM_CONDITIONAL([REF_GL_SDL2], [listContains "sdl2" $ref_gl_platforms])
 
+# REF_SOFT_ASM - Enables x86 assembler routines in ref_soft
+AM_CONDITIONAL([REF_SOFT_ASM], [test "$ref_soft_asm" == "yes"])
+AM_CONDITIONAL([REF_SOFT_ASM_INLINE], [false]) # Needs to be enabled on non-linux platforms
+if test "$ref_soft_asm" == "yes"; then
+	AC_DEFINE([REF_SOFT_ASM], [1], [Use assembler soft refresh routines])
+	AC_DEFINE([REF_SOFT_ASM_INLINE], [1], [Use inline assembler soft refresh routines])
+fi
+
 if test "$platform" == "linux"; then
 	# For some reason, using the software renderer and not having 
 	# position-independent code crashes somewhere in the mixer assembly code. Go figure...
@@ -140,17 +158,25 @@ AC_SUBST([gamesdirdef], [-DGAMES_DIRECTORY=\\\"$gamesdir\\\"])
 AC_DEFINE([DEFAULT_REFRESH_ENGINE], ["glx"], [Default refresh engine to use])
 AC_DEFINE([DEFAULT_GAME], ["baseq2"], [Default game to use])
 
-AC_CONFIG_FILES([Makefile platform/Makefile qcommon/Makefile ref_soft/Makefile ref_gl/Makefile server/Makefile game/Makefile client/Makefile ])
+AC_CONFIG_FILES([Makefile platform/Makefile qcommon/Makefile ref_soft/Makefile 
+                 ref_gl/Makefile ref_gl/linux/Makefile ref_gl/sdl2/Makefile
+                 server/Makefile game/Makefile client/Makefile])
 AC_OUTPUT
 
 echo ""
 echo "Configuration summary"
 echo "---------------------"
-echo "Prefix:                   $prefix"
+echo "Prefix:                     $prefix"
 echo ""
-echo "Engine platform:          $platform"
-echo "Soft refresh platforms:   $(echo $ref_soft_platforms | sed 's/^ *//g')"
-echo "GL refresh platforms:     $(echo $ref_gl_platforms | sed 's/^ *//g')"
+echo "Engine platform:            $platform"
+echo "Soft refresh platforms:     $(echo $ref_soft_platforms | sed 's/^ *//g')"
+echo "GL refresh platforms:       $(echo $ref_gl_platforms | sed 's/^ *//g')"
 echo ""
-echo "Default refresh engine:   glx"
-echo "Default game:             baseq2"
+echo -n "Use soft refresh assembler: $ref_soft_asm"
+if test "x$ref_soft_asm_inline" == "xyes"; then
+	echo "(inline)"
+else
+	echo "(external)"
+fi
+echo "Default refresh engine:     glx"
+echo "Default game:               baseq2"

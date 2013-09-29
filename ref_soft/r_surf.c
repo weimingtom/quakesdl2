@@ -18,7 +18,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 // r_surf.c: surface-related refresh code
-
+#include "config.h"
 #include "r_local.h"
 
 drawsurf_t	r_drawsurf;
@@ -163,7 +163,7 @@ void R_DrawSurface (void)
 
 //=============================================================================
 
-#if	!id386
+#ifndef REF_SOFT_ASM
 
 /*
 ================
@@ -364,7 +364,7 @@ void R_DrawSurfaceBlock8_mip3 (void)
 	}
 }
 
-#endif
+#endif /* REF_SOFT_ASM */
 
 
 //============================================================================

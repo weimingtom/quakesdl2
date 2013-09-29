@@ -19,6 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // r_aclip.c: clip routines for drawing Alias models directly to the screen
 
+#include "config.h"
 #include "r_local.h"
 
 static finalvert_t		fv[2][8];
@@ -60,7 +61,7 @@ void R_Alias_clip_z (finalvert_t *pfv0, finalvert_t *pfv1, finalvert_t *out)
 }
 
 
-#if	!id386
+#ifndef REF_SOFT_ASM
 
 void R_Alias_clip_left (finalvert_t *pfv0, finalvert_t *pfv1, finalvert_t *out)
 {
@@ -180,7 +181,7 @@ void R_Alias_clip_bottom (finalvert_t *pfv0, finalvert_t *pfv1,
 	}
 }
 
-#endif
+#endif /* REF_SOFT_ASM */
 
 
 int R_AliasClip (finalvert_t *in, finalvert_t *out, int flag, int count,
