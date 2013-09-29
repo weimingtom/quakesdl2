@@ -211,26 +211,39 @@ static void ApplyChanges( void *unused )
 	M_ForceMenuOff();
 }
 
+static char **_VID_MenuProbeResolutions() {
+	char **ret = NULL;
+	int width, height;
+	int modes;
+	
+	for (modes = 0; ; modes++) {
+		if (VID_GetModeInfo(&width, &height, modes) == false)
+			break;
+	}
+	
+	ret = malloc(sizeof(char*)*(modes+1));
+
+	int i;
+	
+	for (i = 0; i < modes; i++) {
+		if (VID_GetModeInfo(&width, &height, i) == false)
+			break;
+		ret[i] = malloc(100);
+		snprintf(ret[i], 100, "[%d %d]", width, height);
+	}
+	
+	ret[i] = NULL;
+	return ret;
+}
+
 /*
 ** VID_MenuInit
 */
+static char **resolutions = NULL;
 void VID_MenuInit( void )
 {
-	static const char *resolutions[] = 
-	{
-		"[320 240  ]",
-		"[400 300  ]",
-		"[512 384  ]",
-		"[640 480  ]",
-		"[800 600  ]",
-		"[960 720  ]",
-		"[1024 768 ]",
-		"[1152 864 ]",
-		"[1280 1024]",
-		"[1600 1200]",
-		"[2048 1536]",
-		0
-	};
+	if (resolutions == NULL)
+		resolutions = _VID_MenuProbeResolutions();
 	static const char *refs[] =
 	{
 		"[software       ]",
