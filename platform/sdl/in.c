@@ -11,35 +11,29 @@ void (*RW_IN_Commands_fp)(void) = NULL;
 void (*RW_IN_Move_fp)(usercmd_t *cmd) = NULL;
 void (*RW_IN_Frame_fp)(void) = NULL;
 
-void IN_Init (void)
-{
+void IN_Init() {
 	in_joystick	= Cvar_Get ("in_joystick", "0", CVAR_ARCHIVE);
 	if (RW_IN_Init_fp)
 		RW_IN_Init_fp(&in_state);
 }
 
-void IN_Shutdown (void)
-{
+void IN_Shutdown() {
 	if (RW_IN_Shutdown_fp)
 		RW_IN_Shutdown_fp();
 }
 
-void IN_Commands (void)
-{
+void IN_Commands() {
 	if (RW_IN_Commands_fp)
 		RW_IN_Commands_fp();
 }
 
-void IN_Move (usercmd_t *cmd)
-{
+void IN_Move (usercmd_t *cmd) {
 	if (RW_IN_Move_fp)
 		RW_IN_Move_fp(cmd);
 }
 
-void IN_Frame (void)
-{
-	if (RW_IN_Activate_fp) 
-	{
+void IN_Frame() {
+	if (RW_IN_Activate_fp) {
 		if ( !cl.refresh_prepped || cls.key_dest == key_console || cls.key_dest == key_menu)
 			RW_IN_Activate_fp(false);
 		else
@@ -50,6 +44,5 @@ void IN_Frame (void)
 		RW_IN_Frame_fp();
 }
 
-void IN_Activate (qboolean active)
-{
+void IN_Activate (qboolean active) {
 }

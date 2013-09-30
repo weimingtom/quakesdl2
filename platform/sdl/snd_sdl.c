@@ -25,6 +25,7 @@ static int _SNDDMA_NextPow2(int a) {
 	int i = 1;
 	while (i < a)
 		i = i * 2;
+	return i;
 }
 
 static qboolean _SNDDMA_MapAudioSpec2DMA(const SDL_AudioSpec *spec, dma_t *dma) {
@@ -44,6 +45,11 @@ static qboolean _SNDDMA_MapAudioSpec2DMA(const SDL_AudioSpec *spec, dma_t *dma) 
 /* Main stuff */
 // This may get called in a seperate thread. Locking is done in SNDDMA_*
 static void _SNDDMA_AudioCallback(void* userdata, Uint8* stream, int len) {
+	if (dma.buffer == NULL) {
+		memset(stream, 0, len);
+		return;
+	}
+	
 	/* Just blindly read as much data as requested. Works as long as theres
 	 * no overflow, which we can't handle anyway */
 	int i;
@@ -132,15 +138,16 @@ qboolean SNDDMA_Init() {
 	return false;
 }
 
+#define freeMaybe(a, f) if ((a) != NULL) { (f)((a)); (a) = NULL; }
 void SNDDMA_Shutdown() {
-	free(dma.buffer);
-	SDL_CloseAudioDevice(_snd_audioId);
+	freeMaybe(dma.buffer, free);
+	freeMaybe(_snd_audioId, SDL_CloseAudioDevice);
 	SDL_QuitSubSystem(SDL_INIT_AUDIO);
-	
-	_snd_audioId = 0;
 }
 
 int SNDDMA_GetDMAPos() {
+	if (_snd_audioId == 0)
+		return 0;
 	SDL_LockAudioDevice(_snd_audioId);
 	
 	int ret = SNDDMA_BYTESTOMSAMPLES(_snd_bufferPos);
@@ -151,9 +158,13 @@ int SNDDMA_GetDMAPos() {
 }
 
 void SNDDMA_BeginPainting() {
+	if (_snd_audioId == 0)
+		return;
 	SDL_LockAudioDevice(_snd_audioId);
 }
 
 void SNDDMA_Submit() {
+	if (_snd_audioId == 0)
+		return;
 	SDL_UnlockAudioDevice(_snd_audioId);
 }

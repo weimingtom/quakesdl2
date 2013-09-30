@@ -12,23 +12,13 @@
 #include <SDL_video.h>
 #include "../ref_gl/gl_local.h"
 
-#define KEY_MASK (KeyPressMask | KeyReleaseMask)
-#define MOUSE_MASK (ButtonPressMask | ButtonReleaseMask | \
-		    PointerMotionMask | ButtonMotionMask )
-#define X_MASK (KEY_MASK | MOUSE_MASK | VisibilityChangeMask | StructureNotifyMask )
-
-SDL_Window *_gl_window = NULL;
+SDL_Window *_ref_window = NULL;
 static SDL_GLContext _gl_context = NULL;
 
-/*****************************************************************************/
-
+#define freeMaybe(a, f) if ((a) != NULL) { (f)((a)); (a) = NULL; }
 static void _DestroyWindow() {
-	if (_gl_window) {
-		SDL_GL_DeleteContext(_gl_context);
-		SDL_DestroyWindow(_gl_window);
-		_gl_window = NULL;
-		_gl_context = NULL;
-	}
+	freeMaybe(_gl_context, SDL_GL_DeleteContext);
+	freeMaybe(_ref_window, SDL_DestroyWindow);
 }
 
 int GLimp_SetMode(int *pwidth, int *pheight, int mode, qboolean fullscreen) {
@@ -42,13 +32,14 @@ int GLimp_SetMode(int *pwidth, int *pheight, int mode, qboolean fullscreen) {
 	
 	if (fullscreen)
 		windowflags |= SDL_WINDOW_FULLSCREEN;
-	_gl_window = SDL_CreateWindow("SDLQuake", vid_xpos->value, vid_ypos->value, *pwidth, *pheight, windowflags);
-	if (_gl_window == NULL)
+	_ref_window = SDL_CreateWindow("SDLQuake OpenGL", vid_xpos->value, vid_ypos->value, *pwidth, *pheight, windowflags);
+	if (_ref_window == NULL)
 		return rserr_invalid_mode;
-	_gl_context = SDL_GL_CreateContext(_gl_window);
+	
+	_gl_context = SDL_GL_CreateContext(_ref_window);
 	if (_gl_context == NULL)
 		return rserr_invalid_mode;
-	SDL_GL_MakeCurrent(_gl_window, _gl_context);
+	SDL_GL_MakeCurrent(_ref_window, _gl_context);
 
 	// Let the sound and input subsystems know about the new window
 	ri.Vid_NewWindow(*pwidth, *pheight);
@@ -80,7 +71,7 @@ void GLimp_BeginFrame(float camera_seperation) {
  * as yet to be determined.  Probably better not to make this a GLimp
  * function and instead do a call to GLimp_SwapBuffers. */
 void GLimp_EndFrame() {
-	SDL_GL_SwapWindow(_gl_window);
+	SDL_GL_SwapWindow(_ref_window);
 }
 
 void GLimp_AppActivate(qboolean active) {

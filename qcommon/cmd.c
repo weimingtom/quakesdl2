@@ -710,7 +710,7 @@ void	Cmd_AddCommand (char *cmd_name, xcommand_t function)
 	}
 
 	cmd = Z_Malloc (sizeof(cmd_function_t));
-	cmd->name = cmd_name;
+	cmd->name = strdup(cmd_name);
 	cmd->function = function;
 	cmd->next = cmd_functions;
 	cmd_functions = cmd;

@@ -94,12 +94,21 @@ void VID_NewWindow (int width, int height) {
 	viddef.height = height;
 }
 
+/* Console command to re-start the video mode and refresh DLL. We do this
+ * simply by setting the modified flag for the vid_ref variable, which will
+ * cause the entire video mode and refresh DLL to be reset on the next frame. */
+void VID_Restart_f() {
+	vid_ref->modified = true;
+}
+
 void VID_Init() {
 	vid_ref = Cvar_Get ("vid_ref", DEFAULT_REFRESH_ENGINE, CVAR_ARCHIVE);
 	vid_xpos = Cvar_Get ("vid_xpos", "3", CVAR_ARCHIVE);
 	vid_ypos = Cvar_Get ("vid_ypos", "22", CVAR_ARCHIVE);
 	vid_fullscreen = Cvar_Get ("vid_fullscreen", "0", CVAR_ARCHIVE);
 	vid_gamma = Cvar_Get( "vid_gamma", "1", CVAR_ARCHIVE );
+	
+	Cmd_AddCommand ("vid_restart", VID_Restart_f);
 }
 
 void VID_Shutdown() {

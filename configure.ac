@@ -93,7 +93,7 @@ if test -z "$platform"; then
 	platform="sdl2"
 fi
 if test -z "$ref_soft_platforms"; then
-	ref_soft_platforms="linux"
+	ref_soft_platforms="linux sdl2"
 fi
 if test -z "$ref_gl_platforms"; then
 	ref_gl_platforms="linux sdl2"
@@ -155,10 +155,12 @@ AC_SUBST([gamesdir], [$datadir/game])
 AC_SUBST([gamesdirdef], [-DGAMES_DIRECTORY=\\\"$gamesdir\\\"])
 
 # Defaults
-AC_DEFINE([DEFAULT_REFRESH_ENGINE], ["glx"], [Default refresh engine to use])
+AC_DEFINE([DEFAULT_REFRESH_ENGINE], ["glsdl"], [Default refresh engine to use])
 AC_DEFINE([DEFAULT_GAME], ["baseq2"], [Default game to use])
+AC_DEFINE([DEFAULT_GL_DRIVER], ["libGL.so"], [Default gl driver to use])
 
-AC_CONFIG_FILES([Makefile platform/Makefile qcommon/Makefile ref_soft/Makefile 
+AC_CONFIG_FILES([Makefile platform/Makefile qcommon/Makefile
+                 ref_soft/Makefile ref_soft/linux/Makefile ref_soft/sdl2/Makefile
                  ref_gl/Makefile ref_gl/linux/Makefile ref_gl/sdl2/Makefile
                  server/Makefile game/Makefile client/Makefile])
 AC_OUTPUT
@@ -178,5 +180,5 @@ if test "x$ref_soft_asm_inline" == "xyes"; then
 else
 	echo "(external)"
 fi
-echo "Default refresh engine:     glx"
+echo "Default refresh engine:     glsdl"
 echo "Default game:               baseq2"

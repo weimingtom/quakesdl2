@@ -1,11 +1,20 @@
+#ifdef _INPUT_SOFT
+#include "../ref_soft/r_local.h"
+#else
+#ifdef _INPUT_GL
 #include "../ref_gl/gl_local.h"
+#else
+#error Invalid platform
+#endif
+#endif
+
 #include "../client/keys.h"
-#include "rw_sdl.h"
+#include "in_sdl.h"
 
 #include <SDL.h>
 #include <SDL_scancode.h>
 
-extern SDL_Window *_gl_window;
+extern SDL_Window *_ref_window;
 
 static int   mx, my;
 static int	old_mouse_x, old_mouse_y;
@@ -36,7 +45,6 @@ static cvar_t *freelook;
 
 static qboolean mouse_grabbed = false; // This is also mouse_active
 
-#include <stdio.h>
 #define MAP(a, b) case a: return b;
 static int _TranslateKey(SDL_Keysym *keysym) {
 	// Map scancode-based keys first
@@ -179,16 +187,25 @@ void KBD_Update() {
 void KBD_Close() {
 }
 
-void install_grabs() {
-	SDL_SetWindowGrab(_gl_window, true);
-	SDL_SetRelativeMouseMode(true);
-	mouse_grabbed = true;
-}
-
 void uninstall_grabs() {
-	SDL_SetWindowGrab(_gl_window, false);
+	SDL_SetWindowGrab(_ref_window, false);
 	SDL_SetRelativeMouseMode(false);
 	mouse_grabbed = false;
+}
+
+void install_grabs() {
+	uninstall_grabs();
+	if (SDL_GetMouseFocus() != _ref_window)
+		return;
+	
+	if (SDL_SetRelativeMouseMode(true) != 0)
+		return;
+	
+	SDL_SetWindowGrab(_ref_window, true);
+	if (SDL_GetWindowGrab(_ref_window) != true)
+		return;
+
+	mouse_grabbed = true;
 }
 
 static void Force_CenterView_f() {
@@ -208,6 +225,8 @@ void RW_IN_Init(in_state_t *in_state_p) {
 	int mtype;
 	int i;
 
+	if (!SDL_WasInit(SDL_INIT_VIDEO))
+		SDL_InitSubSystem(SDL_INIT_VIDEO);
 	in_state = in_state_p;
 
 	// mouse variables
@@ -227,9 +246,16 @@ void RW_IN_Init(in_state_t *in_state_p) {
 	ri.Cmd_AddCommand ("force_centerview", Force_CenterView_f);
 
 	mx = my = 0.0;
+	mouse_grabbed = false;
 }
 
 void RW_IN_Shutdown() {
+	if (mouse_grabbed == false)
+		return;
+	if (_ref_window == NULL)
+		return;
+	
+	uninstall_grabs();
 }
 
 void RW_IN_Commands() {
@@ -250,7 +276,7 @@ void RW_IN_Move (usercmd_t *cmd) {
 	mx *= sensitivity->value;
 	my *= sensitivity->value;
 
-// add mouse X/Y movement to cmd
+	// add mouse X/Y movement to cmd
 	if ( (*in_state->in_strafe_state & 1) || 
 		(lookstrafe->value && mlooking ))
 		cmd->sidemove += m_side->value * mx;
@@ -271,10 +297,20 @@ void RW_IN_Move (usercmd_t *cmd) {
 }
 
 static void IN_DeactivateMouse() {
+	if (mouse_grabbed == false)
+		return;
+	if (_ref_window == NULL)
+		return;
+		
 	uninstall_grabs();
 }
 
 static void IN_ActivateMouse() {
+	if (mouse_grabbed == true)
+		return;
+	if (_ref_window == NULL)
+		return;
+		
 	mx = my = 0; // don't spazz
 	install_grabs();
 }
@@ -283,7 +319,7 @@ void RW_IN_Frame() {
 }
 
 void RW_IN_Activate(qboolean active) {
-	if (active || vidmode_active)
+	if (active)
 		IN_ActivateMouse();
 	else
 		IN_DeactivateMouse ();
