@@ -156,7 +156,6 @@ static void ApplyChanges( void *unused )
 		if (gl_driver->modified)
 			vid_ref->modified = true;
 		break;
-
 	case REF_OGLSDL :
 		Cvar_Set( "vid_ref", "glsdl" );
 		Cvar_Set( "gl_driver", DEFAULT_GL_DRIVER );
