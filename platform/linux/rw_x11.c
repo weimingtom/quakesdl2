@@ -1035,7 +1035,7 @@ static qboolean SWimp_InitGraphics( qboolean fullscreen )
 		{
 			char *d = displayname;
 			while (*d && (*d != ':')) d++;
-			if (*d) *d = 0;
+			//if (*d) *d = 0;
 			if (!(!strcasecmp(displayname, "unix") || !*displayname))
 				doShm = false;
 		}
