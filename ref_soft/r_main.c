@@ -230,13 +230,41 @@ R_InitTurb
 */
 void R_InitTurb (void)
 {
-	int		i;
+	int w = vid.width*2;
 	
-	for (i=0 ; i<1280 ; i++)
+	if (sintable != NULL)
+	{
+		free(sintable);
+		free(intsintable);
+		free(blanktable);
+	}
+	
+	if (w == 0)
+	{
+		sintable = NULL;
+		intsintable = NULL;
+		blanktable = NULL;
+		return;
+	}
+	sintable = malloc(sizeof(int)*w);
+	intsintable = malloc(sizeof(int)*w);
+	blanktable = malloc(sizeof(int)*w);
+	
+	int		i;
+	for (i=0 ; i<w ; i++)
 	{
 		sintable[i] = AMP + sin(i*3.14159*2/CYCLE)*AMP;
 		intsintable[i] = AMP2 + sin(i*3.14159*2/CYCLE)*AMP2;	// AMP2, not 20
 		blanktable[i] = 0;			//PGM
+	}
+}
+
+void R_UninitTurb() {
+	if (sintable != NULL)
+	{
+		free(sintable);
+		free(intsintable);
+		free(blanktable);
 	}
 }
 
@@ -364,6 +392,7 @@ void R_Shutdown (void)
 		free (vid.colormap);
 		vid.colormap = NULL;
 	}
+	R_UninitTurb ();
 	R_UnRegister ();
 	Mod_FreeAll ();
 	R_ShutdownImages ();
@@ -1145,6 +1174,7 @@ void R_BeginFrame( float camera_separation )
 				ri.Sys_Error( ERR_FATAL, "ref_soft::R_BeginFrame() - catastrophic mode change failure\n" );
 			}
 		}
+		R_InitTurb ();
 	}
 }
 
