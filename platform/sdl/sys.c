@@ -1,5 +1,3 @@
-#include "platform.h"
-
 #include <stdlib.h>
 #include <stdarg.h>
 

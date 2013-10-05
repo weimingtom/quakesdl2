@@ -789,7 +789,18 @@ NON-PORTABLE SYSTEM SERVICES
 ==============================================================
 */
 
-#include "platform/platform.h"
+void	Sys_Init (void);
+void	Sys_AppActivate (void);
+
+void	Sys_UnloadGame (void);
+void	*Sys_GetGameAPI (void *parms);
+
+char	*Sys_ConsoleInput (void);
+void	Sys_ConsoleOutput (char *string);
+void	Sys_SendKeyEvents (void);
+void	Sys_Error (char *error, ...);
+void	Sys_Quit (void);
+char	*Sys_GetClipboardData( void );
 
 /*
 ==============================================================
