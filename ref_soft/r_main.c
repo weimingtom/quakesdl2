@@ -230,7 +230,7 @@ R_InitTurb
 */
 void R_InitTurb (void)
 {
-	int w = vid.width*2;
+	int w = vid.width*2; // Video width*2 will roughly do it(actually, it overshoots it, but that's okay)
 	
 	if (sintable != NULL)
 	{
