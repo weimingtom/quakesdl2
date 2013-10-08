@@ -158,6 +158,8 @@ AC_SUBST([gamesdirdef], [-DGAMES_DIRECTORY=\\\"$gamesdir\\\"])
 AC_DEFINE([DEFAULT_REFRESH_ENGINE], ["glsdl"], [Default refresh engine to use])
 AC_DEFINE([DEFAULT_GAME], ["baseq2"], [Default game to use])
 AC_DEFINE([DEFAULT_GL_DRIVER], ["libGL.so"], [Default gl driver to use])
+AC_DEFINE([HOMESUBDIRECTORY], [".quake2"], [Subdirectory inside home to use for user files])
+
 
 AC_CONFIG_FILES([Makefile platform/Makefile qcommon/Makefile
                  ref_soft/Makefile ref_soft/linux/Makefile ref_soft/sdl2/Makefile

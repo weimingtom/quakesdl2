@@ -18,6 +18,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
+#include "config.h"
+
 #include <ctype.h>
 #include "qcommon.h"
 
@@ -280,5 +282,6 @@ void FS_InitFilesystem() {
     cvar_t *game = Cvar_Get("game", DEFAULT_GAME, CVAR_LATCH|CVAR_SERVERINFO);
     FS_SetGame(game->string);
     
-    fs_userDir = "/home/rika/q2test";
+    fs_userDir = malloc(strlen(getenv("HOME")) + 1 + strlen(HOMESUBDIRECTORY) + 1);
+    sprintf(fs_userDir, "%s/%s", getenv("HOME"), HOMESUBDIRECTORY);
 }
