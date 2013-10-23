@@ -18,7 +18,7 @@ function autodegen() {
 	# Remove cache
 	rm -Rf autom4te.cache
 	
-	# Remove m4 directory
+	# Remove m4 directory(no shit...)
 	rm -Rf m4
 }
 
