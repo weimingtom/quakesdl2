@@ -13,26 +13,27 @@ LT_INIT
 AM_PROG_AS
 AC_PROG_CC
 AC_PROG_SED
+AC_PROG_LN_S
 PKG_PROG_PKG_CONFIG
 
 # Checks for libraries.
 
 # Checks for header files.
-#AC_PATH_X
-#AC_CHECK_HEADERS([fcntl.h float.h limits.h mntent.h netdb.h netinet/in.h stdlib.h string.h strings.h sys/file.h sys/ioctl.h sys/param.h sys/socket.h sys/time.h termios.h unistd.h])
+AC_PATH_X
+AC_CHECK_HEADERS([fcntl.h float.h limits.h mntent.h netdb.h netinet/in.h stdlib.h string.h sys/file.h sys/ioctl.h sys/param.h sys/socket.h sys/time.h termios.h unistd.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
-#AC_CHECK_HEADER_STDBOOL
-#AC_C_INLINE
-#AC_TYPE_UID_T
+AC_CHECK_HEADER_STDBOOL
+AC_C_INLINE
+AC_TYPE_UID_T
+AC_TYPE_UINT32_T
 
 # Checks for library functions.
-#AC_FUNC_ERROR_AT_LINE
-#AC_FUNC_GETMNTENT
-#AC_FUNC_MALLOC
-#AC_FUNC_MMAP
-#AC_FUNC_REALLOC
-#AC_CHECK_FUNCS([bzero floor getcwd gethostbyname getmntent getpagesize gettimeofday memmove memset mkdir munmap pow putenv select socket sqrt strcasecmp strchr strdup strerror strrchr strstr])
+AC_FUNC_ERROR_AT_LINE
+AC_FUNC_GETMNTENT
+AC_FUNC_MALLOC
+AC_FUNC_MMAP
+AC_CHECK_FUNCS([floor getcwd gethostbyname getmntent getpagesize gettimeofday memmove memset mkdir munmap pow putenv select socket sqrt strcasecmp strchr strdup strerror strrchr strstr])
 
 
 function listContains() {
